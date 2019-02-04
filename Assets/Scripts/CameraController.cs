@@ -3,7 +3,7 @@
 public class CameraController : MonoBehaviour {
 
     public Transform target;
-    private float camSpeed = 0.125f;
+    private float camSpeed = 1f;
 
     public Vector3 offset;
 
