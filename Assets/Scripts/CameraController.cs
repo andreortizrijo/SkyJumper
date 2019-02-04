@@ -1,23 +1,16 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
+﻿using UnityEngine;
 
 public class CameraController : MonoBehaviour {
 
-    public Transform player;
-    private float camSpeed = 0.1f;
+    public Transform target;
+    private float camSpeed = 0.125f;
 
-	// Use this for initialization
-	void Start () {
-        player = GetComponent<Transform>();
-	}
-	
-	// Update is called once per frame
-	void Update ()
-    {
-        if (player)
-        {
-            transform.position = Vector3.Lerp(transform.position, player.position, camSpeed) + new Vector3(0, 0, -10);
-        }
+    public Vector3 offset;
+
+    void LateUpdate()
+    {   
+        Vector3 desiredPosition = target.position + offset;
+        Vector3 camPosition = Vector3.Lerp(transform.position, desiredPosition, camSpeed);
+        transform.position = camPosition;
     }
 }
