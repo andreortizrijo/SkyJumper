@@ -23,6 +23,7 @@ public class PlayerController : MonoBehaviour {
         transform.Translate(movSpeed * Input.GetAxis("Horizontal") * Time.deltaTime, 0f, movSpeed * Input.GetAxis("Vertical") * Time.deltaTime);
     }
 
+    // Flip the character Image
     private void OnCollisionEnter2D(Collision2D collision)
     {
         if (collision.transform.tag == "Ground")
