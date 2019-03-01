@@ -749,6 +749,11 @@ PrefabInstance:
       propertyPath: m_TagString
       value: Ground
       objectReference: {fileID: 0}
+    - target: {fileID: 4483459323920180413, guid: b3c5be5f4f95c2b4d8b826098d884b4e,
+        type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 1223473047853425912, guid: b3c5be5f4f95c2b4d8b826098d884b4e,
         type: 3}
       propertyPath: m_LocalPosition.x
@@ -896,6 +901,11 @@ PrefabInstance:
         type: 3}
       propertyPath: m_Name
       value: Character
+      objectReference: {fileID: 0}
+    - target: {fileID: 1935535304433014149, guid: 0f70f1828752b3b4fadb9e10bbc5355c,
+        type: 3}
+      propertyPath: m_IsActive
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 6356384318568330095, guid: 0f70f1828752b3b4fadb9e10bbc5355c,
         type: 3}
