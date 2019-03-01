@@ -6,33 +6,139 @@ using UnityEngine.UI;
 
 public class DailyEventTimer : MonoBehaviour
 {
-    public Button timerButton;
-    public Text timeLabel;
-    public string StartTime;
-    public string EndTime;
-    private double tcounter;
-    private TimeSpan eventStartTime;
-    private TimeSpan eventEndTime;
-    private TimeSpan currentTime;
+    //UI
+    public Text timeLabel; //only use if your timer uses a label
+    public Button timerButton; //used to disable button when needed
+    public Image _progress;
+    //TIME ELEMENTS
+    public int hours; //to set the hours
+    public int minutes; //to set the minutes
+    public int seconds; //to set the seconds
+    private bool _timerComplete = false;
+    private bool _timerIsReady;
+    private TimeSpan _startTime;
+    private TimeSpan _endTime;
     private TimeSpan _remainingTime;
-    private string Timeformat;
-    private bool timerSet;
-    private bool countIsReady;
-    private bool countIsReady2;
+    //progress filler
+    private float _value = 1f;
+    //reward to claim
+    public int RewardToEarn;
 
 
+
+    //startup
     void Start()
     {
-        eventStartTime = TimeSpan.Parse(StartTime);
-        eventEndTime = TimeSpan.Parse(EndTime);
-        StartCoroutine("CheckTime");
+        if (PlayerPrefs.GetString("_timer") == "")
+        {
+            Debug.Log("==> Enableing button");
+            enableButton();
+        }
+        else
+        {
+            disableButton();
+            StartCoroutine("CheckTime");
+        }
     }
 
 
+
+    //update the time information with what we got some the internet
+    private void updateTime()
+    {
+        if (PlayerPrefs.GetString("_timer") == "Standby")
+        {
+            PlayerPrefs.SetString("_timer", TimeManager.sharedInstance.getCurrentTimeNow());
+            PlayerPrefs.SetInt("_date", TimeManager.sharedInstance.getCurrentDateNow());
+        }
+        else if (PlayerPrefs.GetString("_timer") != "" && PlayerPrefs.GetString("_timer") != "Standby")
+        {
+            int _old = PlayerPrefs.GetInt("_date");
+            int _now = TimeManager.sharedInstance.getCurrentDateNow();
+
+
+            //check if a day as passed
+            if (_now > _old)
+            {//day as passed
+                Debug.Log("Day has passed");
+                enableButton();
+                return;
+            }
+            else if (_now == _old)
+            {//same day
+                Debug.Log("Same Day - configuring now");
+                _configTimerSettings();
+                return;
+            }
+            else
+            {
+                Debug.Log("error with date");
+                return;
+            }
+        }
+        Debug.Log("Day had passed - configuring now");
+        _configTimerSettings();
+    }
+
+    //setting up and configureing the values
+    //update the time information with what we got some the internet
+    private void _configTimerSettings()
+    {
+        _startTime = TimeSpan.Parse(PlayerPrefs.GetString("_timer"));
+        _endTime = TimeSpan.Parse(hours + ":" + minutes + ":" + seconds);
+        TimeSpan temp = TimeSpan.Parse(TimeManager.sharedInstance.getCurrentTimeNow());
+        TimeSpan diff = temp.Subtract(_startTime);
+        _remainingTime = _endTime.Subtract(diff);
+        //start timmer where we left off
+        setProgressWhereWeLeftOff();
+
+        if (diff >= _endTime)
+        {
+            _timerComplete = true;
+            enableButton();
+        }
+        else
+        {
+            _timerComplete = false;
+            disableButton();
+            _timerIsReady = true;
+        }
+    }
+
+    //initializing the value of the timer
+    private void setProgressWhereWeLeftOff()
+    {
+        float totalSeconds = 1f / (float)_endTime.TotalSeconds;
+        float remainingTime = 1f / (float)_remainingTime.TotalSeconds;
+        _value = totalSeconds / remainingTime;
+        _progress.fillAmount = _value;
+    }
+
+
+
+    //enable button function
+    private void enableButton()
+    {
+        timerButton.interactable = true;
+        timeLabel.text = "CLAIM REWARD";
+    }
+
+
+
+    //disable button function
+    private void disableButton()
+    {
+        timerButton.interactable = false;
+        timeLabel.text = "NOT READY";
+    }
+
+
+    //use to check the current time before completely any task. use this to validate
     private IEnumerator CheckTime()
     {
-        Debug.Log("==> Checking the time");
+        disableButton();
         timeLabel.text = "Checking the time";
+        Debug.Log("==> Checking for new time");
         yield return StartCoroutine(
             TimeManager.sharedInstance.getTime()
         );
@@ -42,97 +148,51 @@ public class DailyEventTimer : MonoBehaviour
     }
 
 
-
-    private void updateTime()
+    //trggered on button click
+    public void rewardClicked()
     {
-        currentTime = TimeSpan.Parse(TimeManager.sharedInstance.getCurrentTimeNow());
-        timerSet = true;
+        Debug.Log("==> Claim Button Clicked");
+        claimReward(RewardToEarn);
+        PlayerPrefs.SetString("_timer", "Standby");
+        StartCoroutine("CheckTime");
     }
 
 
 
+    //update method to make the progress tick
     void Update()
     {
-        if (timerSet)
+        if (_timerIsReady)
         {
-            if (currentTime >= eventStartTime && currentTime <= eventEndTime)
-            {//this means the event as already started and players can click and join
-                _remainingTime = eventEndTime.Subtract(currentTime);
-                tcounter = _remainingTime.TotalMilliseconds;
-                countIsReady2 = true;
+            if (!_timerComplete && PlayerPrefs.GetString("_timer") != "")
+            {
+                _value -= Time.deltaTime * 1f / (float)_endTime.TotalSeconds;
+                _progress.fillAmount = _value;
 
-            }
-            else if (currentTime < eventStartTime)
-            {//this means the event had not started yet for today
-                _remainingTime = eventStartTime.Subtract(currentTime);
-                tcounter = _remainingTime.TotalMilliseconds;
-                countIsReady = true;
-            }
-            else
-            {//the event as already passed
-                disableButton("Event is over, comeback tomorrow");
+                //this is called once only
+                if (_value <= 0 && !_timerComplete)
+                {
+                    //when the timer hits 0, let do a quick validation to make sure no speed hacks.
+                    validateTime();
+                    _timerComplete = true;
+                }
             }
         }
-
-        if (countIsReady) { startCountdown(); }
-        if (countIsReady2) { startCountdown2(); }
-    }
-
-    //setup the time format string
-    public string GetRemainingTime(double x)
-    {
-        TimeSpan tempB = TimeSpan.FromMilliseconds(x);
-        Timeformat = string.Format("{0:D2}:{1:D2}:{2:D2}", tempB.Hours, tempB.Minutes, tempB.Seconds);
-        return Timeformat;
     }
 
 
-    private void startCountdown()
-    {
-        timerSet = false;
-        tcounter -= Time.deltaTime * 1000;
-        disableButton("Starting Soon : " + GetRemainingTime(tcounter));
-
-        if (tcounter <= 0)
-        {
-            countIsReady = false;
-            validateTime();
-        }
-    }
-
-    private void startCountdown2()
-    {
-        timerSet = false;
-        tcounter -= Time.deltaTime * 1000;
-        enableButton("Event Started! Time Remaining : " + GetRemainingTime(tcounter));
-
-        if (tcounter <= 0)
-        {
-            countIsReady2 = false;
-            validateTime();
-        }
-    }
-
-    //enable button function
-    private void enableButton(string x)
-    {
-        timerButton.interactable = true;
-        timeLabel.text = x;
-    }
-
-
-    //disable button function
-    private void disableButton(string x)
-    {
-        timerButton.interactable = false;
-        timeLabel.text = x;
-    }
 
     //validator
     private void validateTime()
     {
         Debug.Log("==> Validating time to make sure no speed hack!");
         StartCoroutine("CheckTime");
+    }
+
+
+    private void claimReward(int x)
+    {
+        Debug.Log("YOU EARN " + x + " REWARDS");
     }
 
 }

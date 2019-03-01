@@ -4,14 +4,13 @@ using UnityEngine;
 
 public class TimeManager : MonoBehaviour
 {
-
     public static TimeManager sharedInstance = null;
-    private string _url = "http://tomasfernandes.pt/Beta/getTime.php";
+    private string _url = "http://leatonm.net/wp-content/uploads/2017/candlepin/getdate.php";
     private string _timeData;
     private string _currentTime;
     private string _currentDate;
 
-
+    
     void Awake()
     {
         if (sharedInstance == null)
@@ -25,13 +24,19 @@ public class TimeManager : MonoBehaviour
         DontDestroyOnLoad(gameObject);
     }
 
-
     public IEnumerator getTime()
     {
-        Debug.Log("==> step 1. Getting info from internet now!");
+        Debug.Log("connecting to php");
         WWW www = new WWW(_url);
         yield return www;
-        Debug.Log("==> step 2. Got the info from internet!");
+        if (www.error != null)
+        {
+            Debug.Log("Error");
+        }
+        else
+        {
+            Debug.Log("got the php information");
+        }
         _timeData = www.text;
         string[] words = _timeData.Split('/');
         Debug.Log("The date is : " + words[0]);
@@ -41,21 +46,19 @@ public class TimeManager : MonoBehaviour
         _currentTime = words[1];
     }
 
-
     void Start()
     {
-        Debug.Log("==> TimeManager script is Ready.");
+        Debug.Log("TimeManager script is Ready.");
         StartCoroutine("getTime");
     }
 
-    //get the current date
-    public string getCurrentDateNow()
+    public int getCurrentDateNow()
     {
-        return _currentDate;
+        string[] words = _currentDate.Split('-');
+        int x = int.Parse(words[0] + words[1] + words[2]);
+        return x;
     }
 
-
-    //get the current Time
     public string getCurrentTimeNow()
     {
         return _currentTime;
