@@ -1,23 +1,44 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
+using UnityEngine.UI;
 using UnityEngine;
 
 public class SelectorController : MonoBehaviour
 {
-    public GameController imagePreview;
+    private int i = 0;
+    
+    public GameObject imagePreview;
+    public Sprite[] characters;
 
-    public void Awake()
+    private void Start()
     {
-        
+        imagePreview.GetComponent<Image>().sprite = characters[0];
     }
 
     public void NextCharacter()
     {
+        if (i == characters.Length - 1)
+        {
+            i = 0;
+        }
+        else
+        {
+            i++;
+        }
+        imagePreview.GetComponent<Image>().sprite = characters[i];
 
     }
 
     public void PreviousCharacter()
     {
-
+        if (i == 0)
+        {
+            i = characters.Length - 1;
+        }
+        else
+        {
+            i--;
+        }
+        imagePreview.GetComponent<Image>().sprite = characters[i];
     }
 }

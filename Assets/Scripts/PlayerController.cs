@@ -4,8 +4,8 @@ using UnityEngine;
 
 public class PlayerController : MonoBehaviour {
 
-    private float movSpeed = 7f;
-    private float jumForce = 5f;
+    private float movSpeed = 10f;
+    private float jumForce = 10f;
 
     private bool change;
 
@@ -53,7 +53,7 @@ public class PlayerController : MonoBehaviour {
         }
     }
 
-    /*public void SavePlayer()
+    public void SavePlayer()
     {
         SaveSystem.SavedPlayer(this);
     }
@@ -63,6 +63,5 @@ public class PlayerController : MonoBehaviour {
         Save_Data data = SaveSystem.LoadData();
 
         coin = data.coinEarned;
-        characterSprite = data.charecterSprite;
-    }*/
+    }
 }
