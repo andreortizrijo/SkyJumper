@@ -4,18 +4,22 @@ using UnityEngine;
 
 public class PlayerController : MonoBehaviour {
 
-    private float movSpeed = 7f;
-    private float jumForce = 5f;
+    private float movSpeed = 10f;
+    private float jumForce = 10f;
 
     private bool change;
 
     public Rigidbody2D rb;
     public BoxCollider2D col;
 
+    //public SpriteRenderer characterSprite;
+    public int coin;
+
 	// Use this for initialization
 	void Start () {
         rb = GetComponent<Rigidbody2D>();
         col = GetComponent<BoxCollider2D>();
+        //characterSprite = GetComponent<SpriteRenderer>();
     }
 
     private void Update()
@@ -42,5 +46,22 @@ public class PlayerController : MonoBehaviour {
             }
 
         }
+
+        if (collision.transform.tag == "Coin")
+        {
+            coin += 10;
+        }
+    }
+
+    public void SavePlayer()
+    {
+        SaveSystem.SavedPlayer(this);
+    }
+
+    public void LoadPlayer()
+    {
+        Save_Data data = SaveSystem.LoadData();
+
+        coin = data.coinEarned;
     }
 }

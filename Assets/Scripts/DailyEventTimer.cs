@@ -129,7 +129,7 @@ public class DailyEventTimer : MonoBehaviour
     private void disableButton()
     {
         timerButton.interactable = false;
-        timeLabel.text = "NOT READY";
+        timeLabel.text = "REWARD CLAIMED";
     }
 
 
@@ -137,7 +137,7 @@ public class DailyEventTimer : MonoBehaviour
     private IEnumerator CheckTime()
     {
         disableButton();
-        timeLabel.text = "Checking the time";
+        //timeLabel.text = "Checking the time";
         Debug.Log("==> Checking for new time");
         yield return StartCoroutine(
             TimeManager.sharedInstance.getTime()
