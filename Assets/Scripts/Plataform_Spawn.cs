@@ -12,7 +12,7 @@ public class Plataform_Spawn : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        
+        StartCoroutine(Spawn());
     }
 
     // Update is called once per frame
@@ -21,18 +21,19 @@ public class Plataform_Spawn : MonoBehaviour
         Vector3 UpperC = new Vector3(Screen.width, Screen.height, 0.0f);
         Vector3 largura = Cam.ScreenToWorldPoint(UpperC);
         maxwidth = largura.x - objecto[0].GetComponent<Renderer>().bounds.extents.x;
-        StartCoroutine(Spawn());
+      
     }
 
     IEnumerator Spawn()
     {
-        yield return new WaitForSeconds(2.0f);
+      
         
         while (isLive)
         {
+           
             Vector3 spawnposition = new Vector3(Random.Range(-maxwidth, maxwidth), transform.position.y, 0.0f);
             Instantiate(objecto[Random.Range(0, objecto.Length)], spawnposition, Quaternion.identity);
-            yield return new WaitForSeconds(5.0f);
+            yield return new WaitForSeconds(1.0f);
         }
      
         
