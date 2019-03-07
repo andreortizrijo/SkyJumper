@@ -114,9 +114,5 @@ public class SelectorController : MonoBehaviour
         }
         
     }
-
-    public void Quit()
-    {
-        Application.Quit();
-    }
+   
 }
