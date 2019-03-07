@@ -9,8 +9,7 @@ public class Plataform_Spawn : MonoBehaviour
     public float maxwidth;
     public GameObject[] objecto;
 
-    // Start is called before the first frame update
-    void Start()
+    public void StartGame()
     {
         StartCoroutine(Spawn());
     }
@@ -35,7 +34,6 @@ public class Plataform_Spawn : MonoBehaviour
             Instantiate(objecto[Random.Range(0, objecto.Length)], spawnposition, Quaternion.identity);
             yield return new WaitForSeconds(1.0f);
         }
-     
-        
+
     }
 }

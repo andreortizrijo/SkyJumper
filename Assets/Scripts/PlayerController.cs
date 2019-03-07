@@ -12,14 +12,13 @@ public class PlayerController : MonoBehaviour {
     public Rigidbody2D rb;
     public BoxCollider2D col;
 
-    //public SpriteRenderer characterSprite;
-    public int coin;
+    private GameController coin;
+    private int result = 10;
 
-	// Use this for initialization
-	void Start () {
+    // Use this for initialization
+    void Start () {
         rb = GetComponent<Rigidbody2D>();
         col = GetComponent<BoxCollider2D>();
-        //characterSprite = GetComponent<SpriteRenderer>();
     }
 
     private void Update()
@@ -44,24 +43,19 @@ public class PlayerController : MonoBehaviour {
                 change = true;
                 this.GetComponent<SpriteRenderer>().flipX = change;
             }
-
         }
 
-        if (collision.transform.tag == "Coin")
+        if (collision.transform.tag == "Lose")
         {
-            coin += 10;
+            UnityEditor.PrefabUtility.ResetToPrefabState(this.gameObject);
         }
     }
 
-    public void SavePlayer()
+    private void OnTriggerEnter2D(Collider2D collision)
     {
-        SaveSystem.SavedPlayer(this);
-    }
-
-    public void LoadPlayer()
-    {
-        Save_Data data = SaveSystem.LoadData();
-
-        coin = data.coinEarned;
+        if(collision.transform.tag == "Coin")
+        {
+            coin.coin = coin.coin + result;
+        }
     }
 }
