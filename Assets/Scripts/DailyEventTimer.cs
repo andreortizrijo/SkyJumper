@@ -6,32 +6,29 @@ using UnityEngine.UI;
 
 public class DailyEventTimer : MonoBehaviour
 {
-    //UI
-    public Text timeLabel; //only use if your timer uses a label
-    public Button timerButton; //used to disable button when needed
+    [Header("UI")]
+    public Text timeLabel;
+    public Button timerButton;
     public Image _progress;
-    //TIME ELEMENTS
-    public int hours; //to set the hours
-    public int minutes; //to set the minutes
-    public int seconds; //to set the seconds
+
+    [Header("Time Elements")]
+    public int hours; 
+    public int minutes; 
+    public int seconds; 
     private bool _timerComplete = false;
     private bool _timerIsReady;
     private TimeSpan _startTime;
     private TimeSpan _endTime;
     private TimeSpan _remainingTime;
-    //progress filler
+    
+    [Header("Progress Filler")]
     private float _value = 1f;
-    //reward to claim
-    public int RewardToEarn;
 
-
-
-    //startup
     void Start()
     {
         if (PlayerPrefs.GetString("_timer") == "")
         {
-            Debug.Log("==> Enableing button");
+            //Debug.Log("==> Enableing button");
             enableButton();
         }
         else
@@ -40,8 +37,6 @@ public class DailyEventTimer : MonoBehaviour
             StartCoroutine("CheckTime");
         }
     }
-
-
 
     //update the time information with what we got some the internet
     private void updateTime()
@@ -60,13 +55,13 @@ public class DailyEventTimer : MonoBehaviour
             //check if a day as passed
             if (_now > _old)
             {//day as passed
-                Debug.Log("Day has passed");
+                //Debug.Log("Day has passed");
                 enableButton();
                 return;
             }
             else if (_now == _old)
             {//same day
-                Debug.Log("Same Day - configuring now");
+                //Debug.Log("Same Day - configuring now");
                 _configTimerSettings();
                 return;
             }
@@ -89,6 +84,7 @@ public class DailyEventTimer : MonoBehaviour
         TimeSpan temp = TimeSpan.Parse(TimeManager.sharedInstance.getCurrentTimeNow());
         TimeSpan diff = temp.Subtract(_startTime);
         _remainingTime = _endTime.Subtract(diff);
+
         //start timmer where we left off
         setProgressWhereWeLeftOff();
 
@@ -114,16 +110,12 @@ public class DailyEventTimer : MonoBehaviour
         _progress.fillAmount = _value;
     }
 
-
-
     //enable button function
     private void enableButton()
     {
         timerButton.interactable = true;
         timeLabel.text = "CLAIM REWARD";
     }
-
-
 
     //disable button function
     private void disableButton()
@@ -132,32 +124,27 @@ public class DailyEventTimer : MonoBehaviour
         timeLabel.text = "REWARD CLAIMED";
     }
 
-
     //use to check the current time before completely any task. use this to validate
     private IEnumerator CheckTime()
     {
         disableButton();
         //timeLabel.text = "Checking the time";
-        Debug.Log("==> Checking for new time");
+        //Debug.Log("==> Checking for new time");
         yield return StartCoroutine(
             TimeManager.sharedInstance.getTime()
         );
         updateTime();
-        Debug.Log("==> Time check complete!");
+        //Debug.Log("==> Time check complete!");
 
     }
-
 
     //trggered on button click
     public void rewardClicked()
     {
-        Debug.Log("==> Claim Button Clicked");
-        claimReward(RewardToEarn);
+        //Debug.Log("==> Claim Button Clicked");
         PlayerPrefs.SetString("_timer", "Standby");
         StartCoroutine("CheckTime");
     }
-
-
 
     //update method to make the progress tick
     void Update()
@@ -180,19 +167,10 @@ public class DailyEventTimer : MonoBehaviour
         }
     }
 
-
-
     //validator
     private void validateTime()
     {
-        Debug.Log("==> Validating time to make sure no speed hack!");
+        //Debug.Log("==> Validating time to make sure no speed hack!");
         StartCoroutine("CheckTime");
     }
-
-
-    private void claimReward(int x)
-    {
-        Debug.Log("YOU EARN " + x + " REWARDS");
-    }
-
 }
