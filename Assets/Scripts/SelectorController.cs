@@ -102,17 +102,24 @@ public class SelectorController : MonoBehaviour
 
     public void BuyChar()
     {
-        if(isUnlocked[i] == false && coin.coinInfo.GetComponent<Text>().text == "500")
-        {
-            isUnlocked[i] = true;
-            buyButton.SetActive(false);
-            coin.coin = coin.coin - result;
-        }
-        else
+        if (i == 0)
         {
             character.GetComponent<SpriteRenderer>().sprite = characters[i];
+            character.transform.localScale = new Vector3(3f, 3f, 3f);
+            character.GetComponent<BoxCollider2D>().offset = new Vector2(0.1395913f, 0.1352972f);
         }
-        
+        else if(i == 1)
+        {
+            character.GetComponent<SpriteRenderer>().sprite = characters[i];
+            character.transform.localScale = new Vector3(0.27f, 0.27f, 0.27f);
+            character.GetComponent<BoxCollider2D>().offset = new Vector2(0.1395913f, 0.1352972f);
+        }
+        else if (i == 2)
+        {
+            character.GetComponent<SpriteRenderer>().sprite = characters[i];
+            character.transform.localScale = new Vector3(2f, 2f, 2f);
+            character.GetComponent<BoxCollider2D>().offset = new Vector2(0.1395913f, 0.1352972f);
+        }
     }
    
 }
