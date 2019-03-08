@@ -28,7 +28,6 @@ public class DailyEventTimer : MonoBehaviour
     {
         if (PlayerPrefs.GetString("_timer") == "")
         {
-            //Debug.Log("==> Enableing button");
             enableButton();
         }
         else
@@ -37,8 +36,7 @@ public class DailyEventTimer : MonoBehaviour
             StartCoroutine("CheckTime");
         }
     }
-
-    //update the time information with what we got some the internet
+    
     private void updateTime()
     {
         if (PlayerPrefs.GetString("_timer") == "Standby")
@@ -50,18 +48,14 @@ public class DailyEventTimer : MonoBehaviour
         {
             int _old = PlayerPrefs.GetInt("_date");
             int _now = TimeManager.sharedInstance.getCurrentDateNow();
-
-
-            //check if a day as passed
+            
             if (_now > _old)
-            {//day as passed
-                //Debug.Log("Day has passed");
+            {
                 enableButton();
                 return;
             }
             else if (_now == _old)
-            {//same day
-                //Debug.Log("Same Day - configuring now");
+            { 
                 _configTimerSettings();
                 return;
             }
@@ -74,9 +68,7 @@ public class DailyEventTimer : MonoBehaviour
         Debug.Log("Day had passed - configuring now");
         _configTimerSettings();
     }
-
-    //setting up and configureing the values
-    //update the time information with what we got some the internet
+    
     private void _configTimerSettings()
     {
         _startTime = TimeSpan.Parse(PlayerPrefs.GetString("_timer"));
@@ -84,8 +76,7 @@ public class DailyEventTimer : MonoBehaviour
         TimeSpan temp = TimeSpan.Parse(TimeManager.sharedInstance.getCurrentTimeNow());
         TimeSpan diff = temp.Subtract(_startTime);
         _remainingTime = _endTime.Subtract(diff);
-
-        //start timmer where we left off
+        
         setProgressWhereWeLeftOff();
 
         if (diff >= _endTime)
@@ -100,8 +91,7 @@ public class DailyEventTimer : MonoBehaviour
             _timerIsReady = true;
         }
     }
-
-    //initializing the value of the timer
+    
     private void setProgressWhereWeLeftOff()
     {
         float totalSeconds = 1f / (float)_endTime.TotalSeconds;
@@ -109,44 +99,37 @@ public class DailyEventTimer : MonoBehaviour
         _value = totalSeconds / remainingTime;
         _progress.fillAmount = _value;
     }
-
-    //enable button function
+    
     private void enableButton()
     {
         timerButton.interactable = true;
         timeLabel.text = "CLAIM REWARD";
     }
 
-    //disable button function
     private void disableButton()
     {
         timerButton.interactable = false;
         timeLabel.text = "REWARD CLAIMED";
     }
 
-    //use to check the current time before completely any task. use this to validate
     private IEnumerator CheckTime()
     {
         disableButton();
-        //timeLabel.text = "Checking the time";
-        //Debug.Log("==> Checking for new time");
         yield return StartCoroutine(
             TimeManager.sharedInstance.getTime()
         );
         updateTime();
-        //Debug.Log("==> Time check complete!");
 
     }
 
-    //trggered on button click
+
     public void rewardClicked()
     {
-        //Debug.Log("==> Claim Button Clicked");
+
         PlayerPrefs.SetString("_timer", "Standby");
         StartCoroutine("CheckTime");
     }
-
-    //update method to make the progress tick
+    
     void Update()
     {
         if (_timerIsReady)
@@ -155,22 +138,18 @@ public class DailyEventTimer : MonoBehaviour
             {
                 _value -= Time.deltaTime * 1f / (float)_endTime.TotalSeconds;
                 _progress.fillAmount = _value;
-
-                //this is called once only
+                
                 if (_value <= 0 && !_timerComplete)
                 {
-                    //when the timer hits 0, let do a quick validation to make sure no speed hacks.
                     validateTime();
                     _timerComplete = true;
                 }
             }
         }
     }
-
-    //validator
+    
     private void validateTime()
     {
-        //Debug.Log("==> Validating time to make sure no speed hack!");
         StartCoroutine("CheckTime");
     }
 }

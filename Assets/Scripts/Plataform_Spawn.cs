@@ -9,6 +9,18 @@ public class Plataform_Spawn : MonoBehaviour
     public float maxwidth;
     public GameObject[] objecto;
 
+    [Header("Game")]
+    public GameObject characte;
+    public GameObject cOin;
+    public GameObject plataforma;
+
+    [Header("Menu")]
+    public GameObject gameImage;
+    public GameObject startButton;
+    public GameObject storeButton;
+    public GameObject quitButton;
+    public GameObject rewardButton;
+
     public GameObject startPoint;
     public GameObject deathPoint;
     public GameObject playerPos;
@@ -28,6 +40,13 @@ public class Plataform_Spawn : MonoBehaviour
         if (playerPos.transform.position == deathPoint.transform.position)
         {
             isLive = false;
+            
+            //Hidde Menu UI
+            gameImage.SetActive(true);
+            startButton.SetActive(true);        
+            storeButton.SetActive(true);
+            quitButton.SetActive(true);
+            rewardButton.SetActive(true);
         }
         else if(playerPos.transform.position == startPoint.transform.position)
         {
