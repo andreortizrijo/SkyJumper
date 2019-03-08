@@ -1,18 +1,20 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
+using UnityEngine.UI;
 using UnityEngine;
+using System;
 
 public class PlayerController : MonoBehaviour {
 
     private float movSpeed = 10f;
     private float jumForce = 10f;
 
-    private bool change;
+    public bool change;
 
     public Rigidbody2D rb;
     public BoxCollider2D col;
 
-    private GameController coin;
+    public GameObject coinPoitns;
     private int result = 10;
 
     // Use this for initialization
@@ -44,18 +46,14 @@ public class PlayerController : MonoBehaviour {
                 this.GetComponent<SpriteRenderer>().flipX = change;
             }
         }
-
-        if (collision.transform.tag == "Lose")
-        {
-            UnityEditor.PrefabUtility.ResetToPrefabState(this.gameObject);
-        }
     }
 
     private void OnTriggerEnter2D(Collider2D collision)
     {
-        if(collision.transform.tag == "Coin")
+        if (collision.transform.tag == "Coin")
         {
-            coin.coin = coin.coin + result;
+            //coinPoitns.GetComponent<Text>().text = result.ToString();
+            Destroy(collision.gameObject);
         }
     }
 }

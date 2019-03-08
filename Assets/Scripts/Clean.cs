@@ -4,11 +4,18 @@ using UnityEngine;
 
 public class Clean : MonoBehaviour
 {
+    [SerializeField] private Transform deathPoint;
+
     private void OnCollisionEnter2D(Collision2D collision)
     {
         if (collision.transform.tag == "Ground")
         {
             Destroy(collision.gameObject);
+        }
+
+        if (collision.transform.tag == "Player")
+        {
+            collision.transform.position = deathPoint.transform.position;
         }
     }
 

@@ -5,6 +5,8 @@ using UnityEngine;
 
 public class GameController : MonoBehaviour
 {
+    [SerializeField] private Transform respawnPoint;
+
     [Header("Game")]
     public GameObject characte;
     public GameObject cOin;
@@ -45,10 +47,13 @@ public class GameController : MonoBehaviour
         quitButton.SetActive(false);
         rewardButton.SetActive(false);
 
+
         //Show Game UI
         characte.SetActive(true);
         cOin.SetActive(true);
         plataforma.SetActive(true);
+        characte.transform.position = respawnPoint.transform.position;
+
     }
 
     public void OpenStore()
@@ -91,7 +96,7 @@ public class GameController : MonoBehaviour
         coinInfo.GetComponent<Text>().text = coin.ToString();
     }
 
-    private void Update()
+    public void Update()
     {
         coinInfo.GetComponent<Text>().text = coin.ToString();
     }
