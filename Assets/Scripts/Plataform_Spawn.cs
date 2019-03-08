@@ -40,13 +40,9 @@ public class Plataform_Spawn : MonoBehaviour
         if (playerPos.transform.position == deathPoint.transform.position)
         {
             isLive = false;
-            
+
             //Hidde Menu UI
-            gameImage.SetActive(true);
-            startButton.SetActive(true);        
-            storeButton.SetActive(true);
-            quitButton.SetActive(true);
-            rewardButton.SetActive(true);
+            Application.LoadLevel(Application.loadedLevel);
         }
         else if(playerPos.transform.position == startPoint.transform.position)
         {
